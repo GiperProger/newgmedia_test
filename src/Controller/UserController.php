@@ -7,6 +7,9 @@ use App\Repository\UserRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -23,7 +26,43 @@ class UserController extends AbstractController
         protected UserPasswordHasherInterface $hasher,
         protected EntityManagerInterface $entityManager
     )
+    {}
+
+    #[Route('/', name:'userList', methods: ['GET'])]
+    public function list(Request $request): Response
     {
+        $formData = $request->query->all();
+        $criteriaValue = null;
+        $criteria = null;
+
+        if( $formData ){
+            $criteriaValue  = $formData['form']['criteriaValue'];
+            $criteria  = $formData['form']['criteria'];
+        }
+
+        $form = $this->createFormBuilder()
+        ->add('criteria', ChoiceType::class, [
+            'choices'  => [
+                'username' => 'username',
+                'email' => 'email',
+            ],
+        ])
+        ->add('criteriaValue', TextType::class, [
+            'attr' => ['value' => $criteriaValue],
+        ])
+        ->add('submit', SubmitType::class)
+            ->setMethod('GET')
+            ->setRequired(false)
+            ->setAction($this->generateUrl('userList'))
+            ->getForm();
+
+        if( $criteriaValue ){
+            $userList = $this->userRepository->findBy( [$criteria => $criteriaValue] );
+        }else{
+            $userList = $this->userRepository->findAll();
+        }
+
+        return $this->render('list.html.twig', ['userList' => $userList, 'form' => $form->createView()]);
     }
 
     #[Route('/user', methods: ['GET'])]

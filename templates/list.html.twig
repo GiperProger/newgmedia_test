@@ -1,0 +1,31 @@
+{{ form_start(form) }}
+    <table>
+        <tr>
+            <td>{{ form_row(form.criteria) }}</td>
+            <td>{{ form_row(form.criteriaValue) }}</td>
+            <td>{{ form_row(form.submit) }}</td>
+        </tr>
+    </table>
+
+{{ form_end(form) }}
+
+{% apply inline_css(source("some_styles.css")) %}
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in userList %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endapply %}
+
+
