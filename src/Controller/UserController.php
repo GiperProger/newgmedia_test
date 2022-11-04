@@ -123,9 +123,9 @@ class UserController extends AbstractController
     #[Route('/user/', methods: ['POST'])]
     public function create(Request $request): Response
     {
-        $email = $request->query->get('email');
-        $username = $request->query->get('username');
-        $password = $request->query->get('password');
+        $email = $request->request->get('email');
+        $username = $request->request->get('username');
+        $password = $request->request->get('password');
 
         if (!$email || !$username || !$password) {
             return new Response('Data is incorrect', 400);
