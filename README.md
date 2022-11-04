@@ -13,3 +13,4 @@
 1. `https://localhost/user` send GET request to this endpoint to get the list of the users
 2. `https://localhost/user/?username=supertest&email=superemail&password=1234` send POST request to this endpoint to create the user
 3. `http://localhost/user/1/username/pont/email/alvera.boehm@sawayn.org/password/1234/` send PUT request to this endpoint to update the user. First parameter id is used as a search criteria
+4. Visit `https://localhost/` in your browser to browse the user list
