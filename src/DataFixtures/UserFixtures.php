@@ -5,9 +5,8 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Faker\Factory;
-
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 class UserFixtures extends Fixture
@@ -15,14 +14,7 @@ class UserFixtures extends Fixture
     public function __construct(
         protected UserPasswordHasherInterface $hasher,
     )
-    {}
-
-    /**
-     * @return string[]
-     */
-    public static function getGroups(): array
     {
-        return [ 'mainGroup' ];
     }
 
     /**
@@ -34,7 +26,7 @@ class UserFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        for( $i = 0; $i < 10; $i++){
+        for ($i = 0; $i < 10; $i++) {
             $user = new User();
             $user->setUsername($faker->userName());
             $user->setEmail($faker->email());

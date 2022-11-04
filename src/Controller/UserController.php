@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -24,47 +24,55 @@ class UserController extends AbstractController
         protected UserRepository              $userRepository,
         protected SerializerInterface         $serializer,
         protected UserPasswordHasherInterface $hasher,
-        protected EntityManagerInterface $entityManager
+        protected EntityManagerInterface      $entityManager
     )
-    {}
+    {
+    }
 
-    #[Route('/', name:'userList', methods: ['GET'])]
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/', name: 'userList', methods: ['GET'])]
     public function list(Request $request): Response
     {
         $formData = $request->query->all();
         $criteriaValue = null;
         $criteria = null;
 
-        if( $formData ){
-            $criteriaValue  = $formData['form']['criteriaValue'];
-            $criteria  = $formData['form']['criteria'];
+        if ($formData) {
+            $criteriaValue = $formData['form']['criteriaValue'];
+            $criteria = $formData['form']['criteria'];
         }
 
         $form = $this->createFormBuilder()
-        ->add('criteria', ChoiceType::class, [
-            'choices'  => [
-                'username' => 'username',
-                'email' => 'email',
-            ],
-        ])
-        ->add('criteriaValue', TextType::class, [
-            'attr' => ['value' => $criteriaValue],
-        ])
-        ->add('submit', SubmitType::class)
+            ->add('criteria', ChoiceType::class, [
+                'choices' => [
+                    'username' => 'username',
+                    'email' => 'email',
+                ],
+            ])
+            ->add('criteriaValue', TextType::class, [
+                'attr' => ['value' => $criteriaValue],
+            ])
+            ->add('submit', SubmitType::class)
             ->setMethod('GET')
             ->setRequired(false)
             ->setAction($this->generateUrl('userList'))
             ->getForm();
 
-        if( $criteriaValue ){
-            $userList = $this->userRepository->findBy( [$criteria => $criteriaValue] );
-        }else{
+        if ($criteriaValue) {
+            $userList = $this->userRepository->findBy([$criteria => $criteriaValue]);
+        } else {
             $userList = $this->userRepository->findAll();
         }
 
         return $this->render('list.html.twig', ['userList' => $userList, 'form' => $form->createView()]);
     }
 
+    /**
+     * @return Response
+     */
     #[Route('/user', methods: ['GET'])]
     public function get(): Response
     {
@@ -74,6 +82,13 @@ class UserController extends AbstractController
         return new Response($data);
     }
 
+    /**
+     * @param int $id
+     * @param $username
+     * @param $email
+     * @param $password
+     * @return Response
+     */
     #[Route('/user/{id<\d+>}/username/{username}/email/{email}/password/{password}/', methods: ['PUT'])]
     public function edit(int $id, $username, $email, $password): Response
     {
@@ -96,6 +111,10 @@ class UserController extends AbstractController
         return new Response('User data updated');
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/user/', methods: ['POST'])]
     public function create(Request $request): Response
     {
@@ -110,7 +129,6 @@ class UserController extends AbstractController
         try {
 
             $user = new User();
-
             $user->setUsername($username);
             $user->setEmail($email);
             $user->setPassword($this->hasher->hashPassword($user, $password));
