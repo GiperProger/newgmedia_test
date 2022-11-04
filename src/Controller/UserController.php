@@ -17,7 +17,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
-
+/**
+ * API controller for the {@see User} entity.
+ *
+ * @author  Sergey Prydkin <GiperProger@gmail.com>
+ * @since   1.0
+ */
 class UserController extends AbstractController
 {
     public function __construct(
